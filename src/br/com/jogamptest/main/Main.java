@@ -19,22 +19,31 @@ public final class Main
 	{
 		System.out.println("Joga mp Test");
 
+		//initialize the singleton for default profile to you System
 		GLProfile.initSingleton();
 
+		//create profile GL or GL2 or GL3 etc.
 		GLProfile profile = GLProfile.get(GLProfile.GL2);
 
+		//create capabilities using profile
 		GLCapabilities caps = new GLCapabilities(profile);
 
+		//create window define title and size
 		GLWindow window = GLWindow.create(caps);
-		window.setSize(720,596);
+		window.setSize(1024,576);
 		window.setTitle("Joga mp-Game-Test");
 
+		//get device to set window on center of screen
 	    GraphicsDevice dev = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		DisplayMode displayMode = dev.getDisplayMode();
+
+		//set position to window
 		window.setPosition(displayMode.getWidth()/2-window.getWidth()/2,displayMode.getHeight()/2-window.getHeight()/2);
 
+		//add window to FPSAnimator
 		FPSAnimator fps = new FPSAnimator(window,60);
 
+		//add listeners to window
 		KeyListener input = new GameInputListener();
 		window.addKeyListener(input);
 
@@ -47,13 +56,18 @@ public final class Main
 		GLEventListener glWindowListener = new GLWindowEventListener();
 		window.addGLEventListener(glWindowListener);
 
+		//set false to resizable
 		window.setResizable(false);
-		window.setVisible(true);
 
+		//set visible true for see the window
+		window.setVisible(true);
+		final String title = window.getTitle();
+
+		//update window
 		while(window.isVisible())
 		{
 			window.display();
-			System.out.println("FPS: "+fps.getFPS());
+			window.setTitle(String.format("%s-FPS: %s",title,fps.getFPS()));
 		}
 
 		//clear listeners
@@ -62,6 +76,7 @@ public final class Main
 		window.removeWindowListener(windowListener);
 		window.removeGLEventListener(glWindowListener);
 
+		//destroy window
 		window.destroy();
 	}
 }
