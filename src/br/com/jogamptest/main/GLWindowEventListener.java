@@ -40,12 +40,12 @@ public class GLWindowEventListener implements GLEventListener
 		gl2.glClearColor(0.2f,0.4f,0.85f,1f);
 		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
-		gl2.glColor3f(0.6f,0.6f,0.8f);
+		gl2.glColor3f(1f,1f,0.5f);
 		gl2.glBegin(GL2.GL_QUADS);
-			gl2.glVertex2f(-32f,32f);
-			gl2.glVertex2f(32f,32f);
-			gl2.glVertex2f(32f,-32f);
-			gl2.glVertex2f(-32f,-32f);
+			gl2.glVertex2f(-0.1f,0.1f);
+			gl2.glVertex2f(0.1f,0.1f);
+			gl2.glVertex2f(0.1f,-0.1f);
+			gl2.glVertex2f(-0.1f,-0.1f);
 		gl2.glEnd();
 	}
 
@@ -60,7 +60,9 @@ public class GLWindowEventListener implements GLEventListener
 		gl2.glMatrixMode(GL2.GL_PROJECTION_MATRIX);
 		gl2.glLoadIdentity();
 
-		gl2.glOrtho(-width,width,-height,height,-1,1);
+		float units = (float) Main.HEIGHT /((float) Main.WIDTH /Main.UNITS);
+
+		gl2.glOrtho( Main.UNITS /2f, Main.UNITS /2f,-units,units,-1,1);
 		gl2.glMatrixMode(GL2.GL_MODELVIEW);
 	}
 }

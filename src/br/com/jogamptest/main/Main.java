@@ -11,6 +11,10 @@ import java.awt.*;
 
 public final class Main
 {
+	public static final int UNITS = 100;
+	public static final int WIDTH = 1024;
+	public static final int HEIGHT = 576;
+
 	private Main()
 	{
 
@@ -30,7 +34,7 @@ public final class Main
 
 		//create window define title and size
 		GLWindow window = GLWindow.create(caps);
-		window.setSize(1024,576);
+		window.setSize(WIDTH,HEIGHT);
 		window.setTitle("Joga mp-Game-Test");
 
 		//get device to set window on center of screen
@@ -57,7 +61,7 @@ public final class Main
 		window.addGLEventListener(glWindowListener);
 
 		//set false to resizable
-		window.setResizable(false);
+//		window.setResizable(false);
 
 		//set visible true for see the window
 		window.setVisible(true);
