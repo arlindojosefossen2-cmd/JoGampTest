@@ -8,6 +8,12 @@ public class GLWindowEventListener implements GLEventListener
 {
 	private GL2 gl2;
 
+	//test
+	private final GL2Color color = new GL2Color(0.7f,0.6f,0.3f);
+	private float x = 1;
+	private float rot = 45f;
+	private final GL2Color color2 = new GL2Color(.6f,.7f,.3f);
+
 	@Override
 	public void init(GLAutoDrawable glAutoDrawable)
 	{
@@ -16,8 +22,13 @@ public class GLWindowEventListener implements GLEventListener
 			gl2 = glAutoDrawable.getGL().getGL2();
 		}
 
+		staff(gl2);
+	}
+
+	private void staff(GL2 gl2)
+	{
 		gl2.glClearColor(0.2f,0.4f,0.85f,1f);
-		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT);
+		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 	}
 
 	@Override
@@ -37,16 +48,16 @@ public class GLWindowEventListener implements GLEventListener
 			gl2 = glAutoDrawable.getGL().getGL2();
 		}
 
-		gl2.glClearColor(0.2f,0.4f,0.85f,1f);
-		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+		staff(gl2);
 
-		gl2.glColor3f(1f,1f,0.5f);
-		gl2.glBegin(GL2.GL_QUADS);
-			gl2.glVertex2f(-0.1f,0.1f);
-			gl2.glVertex2f(0.1f,0.1f);
-			gl2.glVertex2f(0.1f,-0.1f);
-			gl2.glVertex2f(-0.1f,-0.1f);
-		gl2.glEnd();
+		GL2Graphics.fillRect(gl2,color2,x,1,1,1);
+		GL2Graphics.fillRect(gl2,1.5f,1.5f,1f,1f);
+
+		GL2Graphics.fillRect(gl2,color,x+0.8f,1,1,1,rot);
+
+		x += 0.05f;
+		rot += 2f;
+
 	}
 
 	@Override
@@ -60,9 +71,9 @@ public class GLWindowEventListener implements GLEventListener
 		gl2.glMatrixMode(GL2.GL_PROJECTION_MATRIX);
 		gl2.glLoadIdentity();
 
-		float units = (float) Main.HEIGHT /((float) Main.WIDTH /Main.UNITS);
+		float units = height / ((float) width / Game.UNITS) / 2;
 
-		gl2.glOrtho( Main.UNITS /2f, Main.UNITS /2f,-units,units,-1,1);
+		gl2.glOrtho( -Game.UNITS /2f, Game.UNITS /2f,-units,units,-1,1);
 		gl2.glMatrixMode(GL2.GL_MODELVIEW);
 	}
 }
