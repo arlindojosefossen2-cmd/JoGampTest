@@ -11,35 +11,26 @@ public abstract class Game
 {
 	public static final int UNITS = 10;
 
-	private final GLWindow window;
+	private GLWindow window;
 
 	private final String title;
+	private final int width;
+	private final int height;
+
 	private FPSAnimator fpsAnimator;
 
-	public static GameInputListener input;
-	public static GameMouseListener mouse;
-	private static WindowResetListeners windowListener;
-	private static GLWindowEventListener glEventListener;
+	public GameInputListener input;
+	public GameMouseListener mouse;
+	private WindowResetListeners windowListener;
+	private GLWindowEventListener glEventListener;
 
 	protected Scene currentScene;
 
-	protected Game(String title,int width,int heigh)
+	protected Game(String title,int width,int height)
 	{
-		//initialize the singleton for default profile to you System
-		GLProfile.initSingleton();
-
-		//create profile GL or GL2 or GL3 etc.
-		GLProfile profile = GLProfile.get(GLProfile.GL2);
-
-		//create capabilities using profile
-		GLCapabilities caps = new GLCapabilities(profile);
-
-		//create window define title and size
-		window = GLWindow.create(caps);
-
-		window.setTitle(title);
-		window.setSize(width,heigh);
-		this.title = window.getTitle();
+		this.title = title;
+		this.width = width;
+		this.height = height;
 	}
 
 	protected void addScene(Scene scene)
@@ -48,38 +39,60 @@ public abstract class Game
 		this.currentScene.start();
 	}
 
-	public void init(int fps,boolean centerOfScreen)
+	private void init(int fps,boolean centerOfScreen)
 	{
-		if(centerOfScreen)
+		//initialize the singleton for default profile to you System
+		GLProfile.initSingleton();
+
+		try
 		{
-			//get device to set window on center of screen
-			GraphicsDevice dev = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-			DisplayMode displayMode = dev.getDisplayMode();
 
-			//set position to window
-			window.setPosition(displayMode.getWidth() / 2 - window.getWidth() / 2, displayMode.getHeight() / 2 - window.getHeight() / 2);
+			//create profile GL or GL2 or GL3 etc.
+			GLProfile profile = GLProfile.get(GLProfile.GL2);
+
+			GLCapabilities caps = new GLCapabilities(profile);
+
+			//create window define title and size
+			window = GLWindow.create(caps);
+
+			window.setTitle(title);
+			window.setSize(width, this.height);
+
+			if (centerOfScreen)
+			{
+				//get device to set window on center of screen
+				GraphicsDevice dev = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+				DisplayMode displayMode = dev.getDisplayMode();
+
+				//set position to window
+				window.setPosition(displayMode.getWidth() / 2 - window.getWidth() / 2, displayMode.getHeight() / 2 - window.getHeight() / 2);
+			}
+			//add window to FPSAnimator
+			fpsAnimator = new FPSAnimator(window, fps);
+
+			//add listeners to window
+			input = new GameInputListener();
+			window.addKeyListener(input);
+
+			mouse = new GameMouseListener();
+			window.addMouseListener(mouse);
+
+			windowListener = new WindowResetListeners();
+			window.addWindowListener(windowListener);
+
+			glEventListener = new GLWindowEventListener();
+			window.addGLEventListener(glEventListener);
+
+			//set false to resizable
+			window.setResizable(false);
+
+			//set visible true for see the window
+			window.setVisible(true);
 		}
-		//add window to FPSAnimator
-		fpsAnimator = new FPSAnimator(window,fps);
-
-		//add listeners to window
-		input = new GameInputListener();
-		window.addKeyListener(input);
-
-		mouse = new GameMouseListener();
-		window.addMouseListener(mouse);
-
-		windowListener = new WindowResetListeners();
-		window.addWindowListener(windowListener);
-
-		glEventListener = new GLWindowEventListener();
-		window.addGLEventListener(glEventListener);
-
-		//set false to resizable
-		window.setResizable(false);
-
-		//set visible true for see the window
-		window.setVisible(true);
+		catch(GLException glException)
+		{
+			JOptionPane.showMessageDialog(null,"ERROR: "+glException.getMessage());
+		}
 	}
 
 	public static void launch(Game game,int fps,boolean centerOfScreen)
@@ -92,7 +105,7 @@ public abstract class Game
 		});
 	}
 
-	public void update()
+	private void update()
 	{
 		//update window
 		while(window.isVisible())
@@ -102,10 +115,10 @@ public abstract class Game
 			this.currentScene.draw();
 
 			window.display();
-			window.setTitle(String.format("%s-FPS: %s",this.title, fpsAnimator.getFPS()));
+			window.setTitle(String.format("%s-FPS: %s",this.title, this.fpsAnimator.getFPS()));
 		}
 	}
-	public void destroy()
+	private void destroy()
 	{
 		//clear listeners
 		window.removeKeyListener(input);

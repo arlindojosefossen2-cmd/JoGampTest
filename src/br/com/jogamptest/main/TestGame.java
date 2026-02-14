@@ -16,7 +16,7 @@ public final class TestGame extends Game
 	public static void main(String[] args)
 	{
 		Game game = new TestGame(GAME_TITLE, WIDTH, HEIGHT);
-		game.addScene(new TestScene());
+		game.addScene(new TestScene(game));
 
 		Game.launch(game,GAME_FPS,true);
 	}

@@ -2,6 +2,12 @@ package br.com.jogamptest.main;
 
 public final class TestScene implements Scene
 {
+	public final Game game;
+
+	public TestScene(Game game)
+	{
+		this.game = game;
+	}
 
 	@Override
 	public void start()
