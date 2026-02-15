@@ -5,6 +5,6 @@ public interface Scene
 	void start();
 	void input();
 	void update();
-	void draw();
+	void draw(GL2Graphics graphics);
 	void stop();
 }

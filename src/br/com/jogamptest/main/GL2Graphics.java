@@ -4,13 +4,20 @@ import com.jogamp.opengl.GL2;
 
 public final class GL2Graphics
 {
-	private GL2Graphics()
+	private GL2 gl2;
+
+	public GL2Graphics()
 	{
 
 	}
 
-	public static void fillRect(GL2 gl2,GL2Color color,float x,float y,float width,float height)
+	public void fillRect(GL2Color color,float x,float y,float width,float height)
 	{
+		if(GLWindowEventListener.gl2 != null)
+		{
+			gl2 = GLWindowEventListener.gl2;
+		}
+
 		if(gl2 != null)
 		{
 			gl2.glColor4f(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha());
@@ -23,22 +30,13 @@ public final class GL2Graphics
 			gl2.glEnd();
 		}
 	}
-	public static void fillRect(GL2 gl2,float x,float y,float width,float height)
+	public void drawRect(GL2Color color,float x,float y,float width,float height)
 	{
-		if (gl2 != null)
+		if(GLWindowEventListener.gl2 != null)
 		{
-			gl2.glColor3f(1f, 1f, 1f);
-
-			gl2.glBegin(GL2.GL_QUADS);
-				gl2.glVertex2f(x, y);
-				gl2.glVertex2f(x + width, y);
-				gl2.glVertex2f(x + width, y + height);
-				gl2.glVertex2f(x, y + height);
-			gl2.glEnd();
+			gl2 = GLWindowEventListener.gl2;
 		}
-	}
-	public static void drawRect(GL2 gl2,GL2Color color,float x,float y,float width,float height)
-	{
+
 		if(gl2 != null)
 		{
 			gl2.glColor4f(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha());
@@ -52,8 +50,13 @@ public final class GL2Graphics
 		}
 	}
 
-	public static void fillRect (GL2 gl2,GL2Color color, float x, float y, float width, float height, float rotation)
+	public void fillRect(GL2Color color, float x, float y, float width, float height, float rotation)
 	{
+		if(GLWindowEventListener.gl2 != null)
+		{
+			gl2 = GLWindowEventListener.gl2;
+		}
+
 		if(gl2 != null)
 		{
 			gl2.glTranslatef(x, y, 0);

@@ -2,17 +2,14 @@ package br.com.jogamptest.main;
 
 public final class GL2Color
 {
-	private final float red;
-	private final float green;
-	private final float blue;
-	private final float alpha;
+	private float red;
+	private float green;
+	private float blue;
+	private float alpha;
 
 	public GL2Color(float red,float green,float blue,float alpha)
 	{
-		this.red = red;
-		this.green = green;
-		this.blue = blue;
-		this.alpha = alpha;
+		this.clamp(red,green,blue,alpha);
 	}
 
 	public float getBlue()
@@ -33,5 +30,12 @@ public final class GL2Color
 	public float getAlpha()
 	{
 		return alpha;
+	}
+	public void clamp(float red,float green,float blue,float alpha)
+	{
+		this.red = Math.max(0,Math.min(1,red));
+		this.green = Math.max(0,Math.min(1,green));
+		this.blue = Math.max(0,Math.min(1,blue));
+		this.alpha = Math.max(0,Math.min(1,alpha));
 	}
 }

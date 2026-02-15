@@ -36,7 +36,6 @@ public abstract class Game
 	protected void addScene(Scene scene)
 	{
 		this.currentScene = scene;
-		this.currentScene.start();
 	}
 
 	private void init(int fps,boolean centerOfScreen)
@@ -69,6 +68,10 @@ public abstract class Game
 			}
 			//add window to FPSAnimator
 			fpsAnimator = new FPSAnimator(window, fps);
+			if(!fpsAnimator.isStarted())
+			{
+				fpsAnimator.start();
+			}
 
 			//add listeners to window
 			input = new GameInputListener();
@@ -80,7 +83,8 @@ public abstract class Game
 			windowListener = new WindowResetListeners();
 			window.addWindowListener(windowListener);
 
-			glEventListener = new GLWindowEventListener();
+			GL2Graphics graphics = new GL2Graphics();
+			glEventListener = new GLWindowEventListener(this, graphics);
 			window.addGLEventListener(glEventListener);
 
 			//set false to resizable
@@ -110,9 +114,8 @@ public abstract class Game
 		//update window
 		while(window.isVisible())
 		{
-			this.currentScene.input();
-			this.currentScene.update();
-			this.currentScene.draw();
+			currentScene.input();
+			currentScene.update();
 
 			window.display();
 			window.setTitle(String.format("%s-FPS: %s",this.title, this.fpsAnimator.getFPS()));
@@ -126,7 +129,8 @@ public abstract class Game
 		window.removeWindowListener(windowListener);
 		window.removeGLEventListener(glEventListener);
 
-		this.currentScene.stop();
+		fpsAnimator.stop();
+
 		//destroy window
 		window.destroy();
 	}
