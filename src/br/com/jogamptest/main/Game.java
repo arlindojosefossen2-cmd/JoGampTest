@@ -3,7 +3,6 @@ package br.com.jogamptest.main;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.*;
-import com.jogamp.opengl.util.FPSAnimator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +11,8 @@ public abstract class Game implements Runnable
 {
 	public static final int UNITS = 10;
 
-	private GLWindow window;
+	private static GLWindow window;
+	private static GLProfile profile;
 
 	private final String title;
 	private final int width;
@@ -23,8 +23,6 @@ public abstract class Game implements Runnable
 	public GameMouseListener mouse;
 	private WindowResetListeners windowListener;
 	private GLWindowEventListener glEventListener;
-
-	private FPSAnimator windowFPSAnimator;
 
 	protected Scene currentScene;
 	private Thread gameThread;
@@ -50,9 +48,8 @@ public abstract class Game implements Runnable
 
 		try
 		{
-
 			//create profile GL or GL2 or GL3 etc.
-			GLProfile profile = GLProfile.get(GLProfile.GL2);
+			profile = GLProfile.get(GLProfile.GL2);
 
 			GLCapabilities caps = new GLCapabilities(profile);
 
@@ -71,9 +68,6 @@ public abstract class Game implements Runnable
 				//set position to window
 				window.setPosition(displayMode.getWidth() / 2 - window.getWidth() / 2, displayMode.getHeight() / 2 - window.getHeight() / 2);
 			}
-
-			windowFPSAnimator = new FPSAnimator(window,60);
-			windowFPSAnimator.start();
 
 			//add listeners to window
 			input = new GameInputListener();
@@ -96,7 +90,10 @@ public abstract class Game implements Runnable
 			window.setVisible(true);
 
 			gameThread = new Thread(this);
+			gameThread.setName("Game");
+			System.out.println(gameThread.getName()+" Starting");
 			gameThread.start();
+
 
 		}
 		catch(GLException glException)
@@ -117,16 +114,17 @@ public abstract class Game implements Runnable
 
 			currentScene.input();
 			currentScene.update();
+			System.out.println(gameThread.getName()+" Running");
 
 			if(input.isKeyDownOnce(KeyEvent.VK_ESCAPE))
 			{
 				running = false;
-				window.setVisible(false);
+				destroy();
 			}
 
 			try
 			{
-				Thread.sleep(20L);
+				Thread.sleep(5L);
 			}
 			catch (InterruptedException e)
 			{
@@ -148,11 +146,18 @@ public abstract class Game implements Runnable
 	private void update()
 	{
 		//update window
-
-		while(window.isVisible())
+		while (window.isVisible())
 		{
 			window.display();
 			window.setTitle(String.format("%s-FPS: %s", this.title, this.fps));
+			try
+			{
+				Thread.sleep(5L);
+			}
+			catch (InterruptedException e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 	}
 	private void destroy()
@@ -163,28 +168,29 @@ public abstract class Game implements Runnable
 		window.removeWindowListener(windowListener);
 		window.removeGLEventListener(glEventListener);
 
-		if(!window.isVisible())
-		{
-			windowFPSAnimator.stop();
-
-
-		}
-
 		//destroy window
 		window.destroy();
+
+		stop();
 	}
 
 	public void stop()
 	{
 		running = false;
-		//stop the thread
+
 		try
 		{
-			gameThread.join();
+			System.out.println(gameThread.getName()+" Stoping");
+			gameThread.join(1L);
 		}
 		catch (InterruptedException e)
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static GLProfile getProfile()
+	{
+		return profile;
 	}
 }

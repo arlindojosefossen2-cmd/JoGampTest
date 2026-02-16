@@ -32,8 +32,9 @@ public class GLWindowEventListener implements GLEventListener
 
 	private void staff(GL2 gl2)
 	{
-		gl2.glClearColor(0.2f,0.4f,0.85f,1f);
+		gl2.glClearColor(0f,0f,0f,1f);
 		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+		gl2.glEnable(GL2.GL_TEXTURE_2D);
 	}
 
 	@Override

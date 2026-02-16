@@ -9,6 +9,8 @@ public final class TestScene implements Scene
 
 	public final Game game;
 
+	private GLImage img;
+
 	private float x;
 	private float y;
 	private float size;
@@ -24,6 +26,8 @@ public final class TestScene implements Scene
 		x = .5f;
 		y = .5f;
 		size = 1;
+
+		img = new GLImage("/girl.png");
 	}
 
 	@Override
@@ -60,14 +64,19 @@ public final class TestScene implements Scene
 	{
 		if(graphics != null)
 		{
-			graphics.fillRect(GL2PaletteColor.RED,x, y, size, size);
+//			graphics.fillRect(GL2PaletteColor.RED,x, y, size, size);
+
+			if(img.getTexture() != null)
+			{
+				graphics.drawTexture(img.getTexture(),GL2PaletteColor.WHITE,x,y,size,size,0);
+			}
 		}
+
 	}
 
 	@Override
 	public void stop()
 	{
-
-
+		img.dispose();
 	}
 }
