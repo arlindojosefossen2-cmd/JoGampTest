@@ -3,24 +3,71 @@ package br.com.jogamptest.main;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 
-public class GameInputListener implements KeyListener
+import java.util.Arrays;
+
+public final class GameInputListener implements KeyListener
 {
-	private final boolean[] keys = new boolean[256];
+	private boolean[] keys;
+	private int[] polled;
+	private int keyPressed;
+	private int keyRelease;
 
-	@Override
-	public void keyPressed(KeyEvent keyEvent)
+	public GameInputListener()
 	{
-		keys[keyEvent.getKeyCode()] = true;
+		keys = new boolean[256];
+		polled = new int[256];
 	}
 
 	@Override
-	public void keyReleased(KeyEvent keyEvent)
+	public synchronized void keyPressed(KeyEvent keyEvent)
 	{
-		keys[keyEvent.getKeyCode()] = false;
+		keyPressed = keyEvent.getKeyCode();
+
+		if(keyPressed >= 0 && keyPressed < keys.length)
+		{
+			keys[keyPressed] = true;
+		}
 	}
 
-	public boolean isKeyDown(int keyVCode)
+	@Override
+	public synchronized void keyReleased(KeyEvent keyEvent)
 	{
-		return keys[keyVCode];
+		keyRelease = keyEvent.getKeyCode();
+
+		if(keyRelease >= 0 && keyRelease < keys.length)
+		{
+			keys[keyRelease] = false;
+		}
+	}
+
+	public synchronized void pollEvent()
+	{
+		for (int i = 0; i < keys.length; i++)
+		{
+			if(keys[i])
+			{
+				polled[i]++;
+			}
+			else
+			{
+				polled[i] = 0;
+			}
+		}
+	}
+
+	public synchronized boolean isKeyDown(int keyVCode)
+	{
+		return (polled[keyVCode]  > 0);
+	}
+
+	public synchronized boolean isKeyDownOnce(int keyVCode)
+	{
+		return (polled[keyVCode]  == 1);
+	}
+
+	public void reset()
+	{
+		Arrays.fill(polled,0);
+		Arrays.fill(keys,false);
 	}
 }

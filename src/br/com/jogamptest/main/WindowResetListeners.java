@@ -5,9 +5,24 @@ import com.jogamp.newt.event.WindowEvent;
 
 public class WindowResetListeners extends WindowAdapter
 {
+	private final Game game;
+
+	public WindowResetListeners(Game game)
+	{
+		this.game = game;
+	}
+
 	@Override
 	public void windowLostFocus(WindowEvent windowEvent)
 	{
-		System.out.println("Lost Focus Reset Listeners");
+		this.game.input.reset();
+		this.game.mouse.reset();
+	}
+
+	@Override
+	public void windowDestroyed(WindowEvent windowEvent)
+	{
+		this.game.stop();
+		super.windowDestroyed(windowEvent);
 	}
 }

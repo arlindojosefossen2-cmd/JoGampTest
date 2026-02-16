@@ -1,5 +1,6 @@
 package br.com.jogamptest.main;
 
+import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.FPSAnimator;
@@ -7,7 +8,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class Game
+public abstract class Game implements Runnable
 {
 	public static final int UNITS = 10;
 
@@ -16,15 +17,18 @@ public abstract class Game
 	private final String title;
 	private final int width;
 	private final int height;
-
-	private FPSAnimator fpsAnimator;
+	private int fps;
 
 	public GameInputListener input;
 	public GameMouseListener mouse;
 	private WindowResetListeners windowListener;
 	private GLWindowEventListener glEventListener;
 
+	private FPSAnimator windowFPSAnimator;
+
 	protected Scene currentScene;
+	private Thread gameThread;
+	private boolean running;
 
 	protected Game(String title,int width,int height)
 	{
@@ -40,6 +44,7 @@ public abstract class Game
 
 	private void init(int fps,boolean centerOfScreen)
 	{
+		this.fps = fps;
 		//initialize the singleton for default profile to you System
 		GLProfile.initSingleton();
 
@@ -66,12 +71,9 @@ public abstract class Game
 				//set position to window
 				window.setPosition(displayMode.getWidth() / 2 - window.getWidth() / 2, displayMode.getHeight() / 2 - window.getHeight() / 2);
 			}
-			//add window to FPSAnimator
-			fpsAnimator = new FPSAnimator(window, fps);
-			if(!fpsAnimator.isStarted())
-			{
-				fpsAnimator.start();
-			}
+
+			windowFPSAnimator = new FPSAnimator(window,60);
+			windowFPSAnimator.start();
 
 			//add listeners to window
 			input = new GameInputListener();
@@ -80,7 +82,7 @@ public abstract class Game
 			mouse = new GameMouseListener();
 			window.addMouseListener(mouse);
 
-			windowListener = new WindowResetListeners();
+			windowListener = new WindowResetListeners(this);
 			window.addWindowListener(windowListener);
 
 			GL2Graphics graphics = new GL2Graphics();
@@ -92,10 +94,44 @@ public abstract class Game
 
 			//set visible true for see the window
 			window.setVisible(true);
+
+			gameThread = new Thread(this);
+			gameThread.start();
+
 		}
 		catch(GLException glException)
 		{
 			JOptionPane.showMessageDialog(null,"ERROR: "+glException.getMessage());
+		}
+	}
+
+	@Override
+	public synchronized void run()
+	{
+		running = true;
+
+		while(running)
+		{
+			input.pollEvent();
+			mouse.pollEvent();
+
+			currentScene.input();
+			currentScene.update();
+
+			if(input.isKeyDownOnce(KeyEvent.VK_ESCAPE))
+			{
+				running = false;
+				window.setVisible(false);
+			}
+
+			try
+			{
+				Thread.sleep(20L);
+			}
+			catch (InterruptedException e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
@@ -112,13 +148,11 @@ public abstract class Game
 	private void update()
 	{
 		//update window
+
 		while(window.isVisible())
 		{
-			currentScene.input();
-			currentScene.update();
-
 			window.display();
-			window.setTitle(String.format("%s-FPS: %s",this.title, this.fpsAnimator.getFPS()));
+			window.setTitle(String.format("%s-FPS: %s", this.title, this.fps));
 		}
 	}
 	private void destroy()
@@ -129,9 +163,28 @@ public abstract class Game
 		window.removeWindowListener(windowListener);
 		window.removeGLEventListener(glEventListener);
 
-		fpsAnimator.stop();
+		if(!window.isVisible())
+		{
+			windowFPSAnimator.stop();
+
+
+		}
 
 		//destroy window
 		window.destroy();
+	}
+
+	public void stop()
+	{
+		running = false;
+		//stop the thread
+		try
+		{
+			gameThread.join();
+		}
+		catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

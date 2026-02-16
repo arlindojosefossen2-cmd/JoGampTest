@@ -3,53 +3,146 @@ package br.com.jogamptest.main;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.MouseListener;
 
+import java.awt.*;
+import java.util.Arrays;
+
 public class GameMouseListener implements MouseListener
 {
+	private static final int BUTTON_COUNT = 3;
+
+	private Point mousePosition;
+	private Point currentPosition;
+
+	private boolean[] mouse;
+	private int[] polled;
+
+	private float notches;
+	private float polledNotches;
+
+	private int buttonPressed;
+	private int buttonRelease;
+
+	public GameMouseListener()
+	{
+		mousePosition = new Point();
+		currentPosition = new Point();
+
+		mouse = new boolean[BUTTON_COUNT];
+		polled = new int[BUTTON_COUNT];
+	}
+
+	public synchronized void pollEvent()
+	{
+		mousePosition = currentPosition;
+
+		polledNotches = notches;
+		notches = 0;
+
+		for (int i = 0; i < mouse.length; i++)
+		{
+			if (mouse[i])
+			{
+				polled[i]++;
+			}
+			else
+			{
+				polled[i] = 0;
+			}
+		}
+	}
+	public Point getMousePosition()
+	{
+		return mousePosition;
+	}
+	public float getNotches()
+	{
+		return polledNotches;
+	}
+
+	public boolean isButtonDown(int keyButton)
+	{
+		return (polled[keyButton-1] > 0);
+	}
+
+	public boolean isButtonDownOnce(int keyButton)
+	{
+		return (polled[keyButton-1] == 1);
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent mouseEvent)
 	{
-		System.out.println("Clicked: "+mouseEvent.getButton());
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent mouseEvent)
 	{
-		System.out.println("Mouse Entered");
+		mouseMoved(mouseEvent);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent mouseEvent)
 	{
-		System.out.println("Mouse Exite");
+		mouseMoved(mouseEvent);
 	}
 
 	@Override
 	public void mousePressed(MouseEvent mouseEvent)
 	{
-		System.out.println("Pressed: "+mouseEvent.getButton());
+		buttonPressed = mouseEvent.getButton()-1;
+
+		if(buttonPressed >= 0 && buttonPressed < mouse.length)
+		{
+			mouse[buttonPressed] = true;
+		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent mouseEvent)
 	{
-		System.out.println("Release: "+mouseEvent.getButton());
+		buttonRelease = mouseEvent.getButton()-1;
+
+		if (buttonRelease >= 0 && buttonRelease < mouse.length)
+		{
+			mouse[buttonRelease] = false;
+		}
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent mouseEvent)
 	{
-		System.out.println("Mouse Moved");
+		currentPosition.setLocation(mouseEvent.getX(),mouseEvent.getY());
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent mouseEvent)
 	{
-		System.out.println("Mouse Dragged");
+		mouseMoved(mouseEvent);
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseEvent mouseEvent)
 	{
-		System.out.println("Mouse Wheel: (x = "+mouseEvent.getX()+", y = "+mouseEvent.getY());
+		//code to modify
+		for (int i = 0; i < mouseEvent.getRotation().length; i++)
+		{
+			notches += mouseEvent.getRotation()[i];
+		}
+	}
+
+	public void reset()
+	{
+		Arrays.fill(mouse,false);
+		Arrays.fill(polled,0);
+
+		mousePosition = new Point();
+		currentPosition = new Point();
+
+		notches = 0;
+		polledNotches = 0;
+
+		buttonRelease = 0;
+		buttonPressed = 0;
 	}
 }
