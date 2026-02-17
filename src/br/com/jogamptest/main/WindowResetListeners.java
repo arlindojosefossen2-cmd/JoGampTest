@@ -18,4 +18,11 @@ public class WindowResetListeners extends WindowAdapter
 		this.game.input.reset();
 		this.game.mouse.reset();
 	}
+
+	@Override
+	public void windowDestroyNotify(WindowEvent windowEvent)
+	{
+		super.windowDestroyNotify(windowEvent);
+		this.game.destroy();
+	}
 }

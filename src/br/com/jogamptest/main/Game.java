@@ -51,6 +51,7 @@ public abstract class Game implements Runnable
 			//create profile GL or GL2 or GL3 etc.
 			profile = GLProfile.get(GLProfile.GL2);
 
+			//create capabilities
 			GLCapabilities caps = new GLCapabilities(profile);
 
 			//create window define title and size
@@ -91,14 +92,11 @@ public abstract class Game implements Runnable
 
 			gameThread = new Thread(this);
 			gameThread.setName("Game");
-			System.out.println(gameThread.getName()+" Starting");
 			gameThread.start();
-
-
 		}
 		catch(GLException glException)
 		{
-			JOptionPane.showMessageDialog(null,"ERROR: "+glException.getMessage());
+		  JOptionPane.showMessageDialog(null,"ERROR: "+glException.getMessage());
 		}
 	}
 
@@ -114,17 +112,17 @@ public abstract class Game implements Runnable
 
 			currentScene.input();
 			currentScene.update();
-			System.out.println(gameThread.getName()+" Running");
 
 			if(input.isKeyDownOnce(KeyEvent.VK_ESCAPE))
 			{
-				running = false;
-				destroy();
+				break;
 			}
+
+			update();
 
 			try
 			{
-				Thread.sleep(5L);
+				Thread.sleep(10L);
 			}
 			catch (InterruptedException e)
 			{
@@ -136,31 +134,16 @@ public abstract class Game implements Runnable
 	public static void launch(Game game,int fps,boolean centerOfScreen)
 	{
 		SwingUtilities.invokeLater(()->
-		{
-			game.init(fps,centerOfScreen);
-			game.update();
-			game.destroy();
-		});
+				game.init(fps,centerOfScreen));
 	}
 
 	private void update()
 	{
 		//update window
-		while (window.isVisible())
-		{
-			window.display();
-			window.setTitle(String.format("%s-FPS: %s", this.title, this.fps));
-			try
-			{
-				Thread.sleep(5L);
-			}
-			catch (InterruptedException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
+		window.setTitle(String.format("%s-FPS: %s", this.title, this.fps));
+		window.display();
 	}
-	private void destroy()
+	void destroy()
 	{
 		//clear listeners
 		window.removeKeyListener(input);
@@ -171,16 +154,16 @@ public abstract class Game implements Runnable
 		//destroy window
 		window.destroy();
 
+		//stop the gameThread
 		stop();
 	}
 
-	public void stop()
+	private void stop()
 	{
 		running = false;
 
 		try
 		{
-			System.out.println(gameThread.getName()+" Stoping");
 			gameThread.join(1L);
 		}
 		catch (InterruptedException e)

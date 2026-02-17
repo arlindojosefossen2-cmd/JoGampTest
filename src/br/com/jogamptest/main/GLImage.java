@@ -13,6 +13,8 @@ import static javax.imageio.ImageIO.*;
 public class GLImage
 {
 	private final Texture texture;
+	private final int width;
+	private final int height;
 
 	public GLImage(String filepath)
 	{
@@ -21,12 +23,24 @@ public class GLImage
 			BufferedImage image = read(Objects.requireNonNull(GLImage.class.getResourceAsStream(filepath)));
 			image.flush();
 
+			width = image.getWidth()/Game.UNITS/2;
+			height = image.getHeight()/width/Game.UNITS/2;
 			texture = AWTTextureIO.newTexture(Game.getProfile(), image,true);
 		}
 		catch (IOException e)
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	public int getHeight()
+	{
+		return height;
+	}
+
+	public int getWidth()
+	{
+		return width;
 	}
 
 	public Texture getTexture()

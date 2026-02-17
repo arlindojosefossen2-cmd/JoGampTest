@@ -13,7 +13,6 @@ public final class TestScene implements Scene
 
 	private float x;
 	private float y;
-	private float size;
 
 	public TestScene(Game game)
 	{
@@ -25,7 +24,6 @@ public final class TestScene implements Scene
 	{
 		x = .5f;
 		y = .5f;
-		size = 1;
 
 		img = new GLImage("/girl.png");
 	}
@@ -64,11 +62,11 @@ public final class TestScene implements Scene
 	{
 		if(graphics != null)
 		{
-//			graphics.fillRect(GL2PaletteColor.RED,x, y, size, size);
+//			graphics.drawRect(GL2PaletteColor.RED,x, y, 1,1,0);
 
 			if(img.getTexture() != null)
 			{
-				graphics.drawTexture(img.getTexture(),GL2PaletteColor.WHITE,x,y,size,size,0);
+				graphics.drawTexture(img.getTexture(),x,y,img.getWidth(),img.getHeight());
 			}
 		}
 
