@@ -24,7 +24,7 @@ public class GLImage
 			image.flush();
 
 			width = image.getWidth()/Game.UNITS/2;
-			height = image.getHeight()/width/Game.UNITS/2;
+			height = image.getHeight()/Game.UNITS/2;
 			texture = AWTTextureIO.newTexture(Game.getProfile(), image,true);
 		}
 		catch (IOException e)

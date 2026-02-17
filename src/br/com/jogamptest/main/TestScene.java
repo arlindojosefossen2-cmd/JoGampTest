@@ -13,6 +13,7 @@ public final class TestScene implements Scene
 
 	private float x;
 	private float y;
+	private final float size = 64;
 
 	public TestScene(Game game)
 	{
@@ -62,8 +63,6 @@ public final class TestScene implements Scene
 	{
 		if(graphics != null)
 		{
-//			graphics.drawRect(GL2PaletteColor.RED,x, y, 1,1,0);
-
 			if(img.getTexture() != null)
 			{
 				graphics.drawTexture(img.getTexture(),x,y,img.getWidth(),img.getHeight());

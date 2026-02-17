@@ -1,13 +1,13 @@
 package br.com.jogamptest.main;
 
-public final class GL2Color
+public final class FloatColor
 {
 	private float red;
 	private float green;
 	private float blue;
 	private float alpha;
 
-	public GL2Color(float red,float green,float blue,float alpha)
+	public FloatColor(float red, float green, float blue, float alpha)
 	{
 		this.clamp(red,green,blue,alpha);
 	}
