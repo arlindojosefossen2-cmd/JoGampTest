@@ -1,6 +1,5 @@
 package br.com.jogamptest.main;
 
-import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.*;
 
@@ -17,7 +16,7 @@ public abstract class Game implements Runnable
 	private final String title;
 	private final int width;
 	private final int height;
-	private int fps;
+	private int fpsSleep;
 
 	public GameInputListener input;
 	public GameMouseListener mouse;
@@ -27,6 +26,7 @@ public abstract class Game implements Runnable
 	protected Scene currentScene;
 	private Thread gameThread;
 	private boolean running;
+	private final FrameRate frameRate = new FrameRate();
 
 	protected Game(String title,int width,int height)
 	{
@@ -40,9 +40,9 @@ public abstract class Game implements Runnable
 		this.currentScene = scene;
 	}
 
-	private void init(int fps,boolean centerOfScreen)
+	private void init(int fpsSleep,boolean centerOfScreen)
 	{
-		this.fps = fps;
+		this.fpsSleep = fpsSleep;
 		//initialize the singleton for default profile to you System
 		GLProfile.initSingleton();
 
@@ -104,43 +104,61 @@ public abstract class Game implements Runnable
 	public synchronized void run()
 	{
 		running = true;
+		frameRate.initialize();
+
+		long curTime = System.nanoTime();
+		long lastTime = curTime;
+
+		double nsPerFrame;
 
 		while(running)
 		{
+			frameRate.calculate();
+
 			input.pollEvent();
 			mouse.pollEvent();
 
-			currentScene.input();
-			currentScene.update();
-
-			if(input.isKeyDownOnce(KeyEvent.VK_ESCAPE))
+			if (input.isKeyDownOnce(com.jogamp.newt.event.KeyEvent.VK_ESCAPE))
 			{
 				break;
 			}
 
+			curTime = System.nanoTime();
+			nsPerFrame = curTime - lastTime;
+
+			currentScene.input((float) (nsPerFrame / 1.0E9));
+			currentScene.update((float) (nsPerFrame / 1.0E9));
+
 			update();
 
-			try
-			{
-				Thread.sleep(10L);
-			}
-			catch (InterruptedException e)
-			{
-				throw new RuntimeException(e);
-			}
+			sleep(fpsSleep);
+
+			lastTime = curTime;
 		}
 	}
 
-	public static void launch(Game game,int fps,boolean centerOfScreen)
+	private void sleep(int fpsSleep)
+	{
+		try
+		{
+			Thread.sleep(fpsSleep);
+		}
+		catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static void launch(Game game,int fpsSleep,boolean centerOfScreen)
 	{
 		SwingUtilities.invokeLater(()->
-				game.init(fps,centerOfScreen));
+				game.init(fpsSleep,centerOfScreen));
 	}
 
 	private void update()
 	{
 		//update window
-		window.setTitle(String.format("%s-FPS: %s", this.title, this.fps));
+		window.setTitle(String.format("%s-FPS: %s", this.title, frameRate.getFrameRate()));
 		window.display();
 	}
 	void destroy()

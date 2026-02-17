@@ -7,10 +7,8 @@ import java.util.Arrays;
 
 public final class GameInputListener implements KeyListener
 {
-	private boolean[] keys;
-	private int[] polled;
-	private int keyPressed;
-	private int keyRelease;
+	private final boolean[] keys;
+	private final int[] polled;
 
 	public GameInputListener()
 	{
@@ -19,9 +17,9 @@ public final class GameInputListener implements KeyListener
 	}
 
 	@Override
-	public synchronized void keyPressed(KeyEvent keyEvent)
+	public void keyPressed(KeyEvent keyEvent)
 	{
-		keyPressed = keyEvent.getKeyCode();
+		int keyPressed = keyEvent.getKeyCode();
 
 		if(keyPressed >= 0 && keyPressed < keys.length)
 		{
@@ -30,9 +28,9 @@ public final class GameInputListener implements KeyListener
 	}
 
 	@Override
-	public synchronized void keyReleased(KeyEvent keyEvent)
+	public void keyReleased(KeyEvent keyEvent)
 	{
-		keyRelease = keyEvent.getKeyCode();
+		int keyRelease = keyEvent.getKeyCode();
 
 		if(keyRelease >= 0 && keyRelease < keys.length)
 		{
@@ -40,7 +38,7 @@ public final class GameInputListener implements KeyListener
 		}
 	}
 
-	public synchronized void pollEvent()
+	public void pollEvent()
 	{
 		for (int i = 0; i < keys.length; i++)
 		{
@@ -55,14 +53,14 @@ public final class GameInputListener implements KeyListener
 		}
 	}
 
-	public synchronized boolean isKeyDown(int keyVCode)
+	public boolean isKeyDown(int keyCode)
 	{
-		return (polled[keyVCode]  > 0);
+		return polled[keyCode] > 0;
 	}
 
-	public synchronized boolean isKeyDownOnce(int keyVCode)
+	public boolean isKeyDownOnce(int keyCode)
 	{
-		return (polled[keyVCode]  == 1);
+		return polled[keyCode] == 1;
 	}
 
 	public void reset()

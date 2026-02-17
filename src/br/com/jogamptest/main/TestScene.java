@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 public final class TestScene implements Scene
 {
-	public static final float SPEED = .1f;
+	public static final float SPEED = 5f;
 
 	public final Game game;
 
@@ -13,7 +13,9 @@ public final class TestScene implements Scene
 
 	private float x;
 	private float y;
-	private final float size = 64;
+
+	private boolean moving;
+	private int direction;
 
 	public TestScene(Game game)
 	{
@@ -30,32 +32,55 @@ public final class TestScene implements Scene
 	}
 
 	@Override
-	public void input()
+	public void input(float delta)
 	{
 		if (game.input.isKeyDown(KeyEvent.VK_W))
 		{
-			y += SPEED;
+			moving = true;
+			direction = 0;
 		}
 		else if (game.input.isKeyDown(KeyEvent.VK_D))
 		{
-			x += SPEED;
+			moving = true;
+			direction = 1;
 		}
 		else if (game.input.isKeyDown(KeyEvent.VK_A))
 		{
-			x -= SPEED;
+			moving = true;
+			direction = 2;
 		}
 		else if (game.input.isKeyDown(KeyEvent.VK_S))
 		{
-			y -= SPEED;
+			moving = true;
+			direction = 3;
+		}
+		else
+		{
+			moving = false;
 		}
 	}
 
 	@Override
-	public void update()
+	public void update(float delta)
 	{
-
-
-
+		if(moving)
+		{
+			switch (direction)
+			{
+				case 0:
+					y += SPEED*delta;
+					break;
+				case 1:
+					x += SPEED*delta;
+					break;
+				case 2:
+					x -= SPEED*delta;
+					break;
+				case 3:
+					y -= SPEED*delta;
+					break;
+			}
+		}
 	}
 
 	@Override
