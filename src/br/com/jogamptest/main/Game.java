@@ -135,6 +135,7 @@ public abstract class Game implements Runnable
 
 			lastTime = curTime;
 		}
+		destroy();
 	}
 
 	private void sleep(int fpsSleep)
@@ -158,8 +159,8 @@ public abstract class Game implements Runnable
 	private void update()
 	{
 		//update window
-		window.setTitle(String.format("%s-FPS: %s", this.title, frameRate.getFrameRate()));
 		window.display();
+		window.setTitle(String.format("%s-FPS: %s", this.title, this.frameRate.getFrameRate()));
 	}
 	void destroy()
 	{
