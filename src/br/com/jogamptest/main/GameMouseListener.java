@@ -13,8 +13,8 @@ public class GameMouseListener implements MouseListener
 	private Point mousePosition;
 	private Point currentPosition;
 
-	private boolean[] mouse;
-	private int[] polled;
+	private final boolean[] mouse;
+	private final int[] polled;
 
 	private float notches;
 	private float polledNotches;
@@ -22,8 +22,11 @@ public class GameMouseListener implements MouseListener
 	private int buttonPressed;
 	private int buttonRelease;
 
-	public GameMouseListener()
+	private final Game game;
+
+	public GameMouseListener(Game game)
 	{
+		this.game = game;
 		mousePosition = new Point();
 		currentPosition = new Point();
 
@@ -129,6 +132,16 @@ public class GameMouseListener implements MouseListener
 		{
 			notches += mouseEvent.getRotation()[i];
 		}
+	}
+
+	public float worldX()
+	{
+		return (float) Game.UNITS /game.getHeight()*currentPosition.x - (float) Game.UNITS /2+game.camera.x;
+	}
+	public float worldY()
+	{
+		float tallUnits = (float) Game.UNITS*game.getHeight()/game.getWidth();
+		return tallUnits/game.getHeight()*currentPosition.y - tallUnits/2 + game.camera.y;
 	}
 
 	public void reset()

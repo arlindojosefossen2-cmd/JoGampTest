@@ -5,6 +5,10 @@ import java.awt.event.KeyEvent;
 public final class Player extends GameObject
 {
 	public static final float SPEED = 5f;
+	public static final int DIRECTION_UP = 3;
+	public static final int DIRECTION_LEFT = 2;
+	public static final int DIRECTION_RIGHT = 1;
+	public static final int DIRECTION_DOWN = 0;
 
 	private boolean moving;
 	private int direction;
@@ -39,22 +43,22 @@ public final class Player extends GameObject
 		if (game.input.isKeyDown(KeyEvent.VK_W))
 		{
 			moving = true;
-			direction = 0;
+			direction = DIRECTION_DOWN;
 		}
 		else if (game.input.isKeyDown(KeyEvent.VK_D))
 		{
 			moving = true;
-			direction = 1;
+			direction = DIRECTION_RIGHT;
 		}
 		else if (game.input.isKeyDown(KeyEvent.VK_A))
 		{
 			moving = true;
-			direction = 2;
+			direction = DIRECTION_LEFT;
 		}
 		else if (game.input.isKeyDown(KeyEvent.VK_S))
 		{
 			moving = true;
-			direction = 3;
+			direction = DIRECTION_UP;
 		}
 		else
 		{
@@ -69,17 +73,17 @@ public final class Player extends GameObject
 		{
 			switch (direction)
 			{
-				case 0:
+				case DIRECTION_DOWN:
 					y += SPEED*delta;
 					break;
-				case 1:
+				case DIRECTION_RIGHT:
 					x += SPEED*delta;
 					break;
-				case 2:
+				case DIRECTION_LEFT:
 					x -= SPEED*delta;
 					break;
-				case 3:
-					y -= SPEED*delta;
+				case DIRECTION_UP:
+					y -= SPEED*delta ;
 					break;
 			}
 		}

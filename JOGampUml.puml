@@ -1,0 +1,318 @@
+@startuml
+interface br.com.jogamptest.main.IGameObject {
+~ void start()
+~ void input(float)
+~ void update(float)
+~ void draw(GL2Graphics)
+~ void dispose()
+}
+
+class br.com.jogamptest.main.GLWindowEventListener {
+- {static} GL2 gl2
+- GL2Graphics graphics
+- Game game
++ <<Create>> GLWindowEventListener(Game,GL2Graphics)
++ void init(GLAutoDrawable)
+- void staff(GL2)
++ void dispose(GLAutoDrawable)
++ void display(GLAutoDrawable)
++ void reshape(GLAutoDrawable,int,int,int,int)
++ {static} GL2 getGl2()
+}
+
+
+class br.com.jogamptest.main.Player {
++ {static} float SPEED
++ {static} int DIRECTION_UP
++ {static} int DIRECTION_LEFT
++ {static} int DIRECTION_RIGHT
++ {static} int DIRECTION_DOWN
+- boolean moving
+- int direction
+- Game game
++ <<Create>> Player(Game,float,float)
++ void start()
++ void input(float)
++ void update(float)
+}
+
+
+abstract class br.com.jogamptest.main.Game {
++ {static} int UNITS
+- {static} GLWindow window
+- {static} GLProfile profile
+- String title
+- int width
+- int height
+- int fpsSleep
++ GameInputListener input
++ GameMouseListener mouse
+- WindowResetListeners windowListener
+- GLWindowEventListener glEventListener
+# Scene currentScene
+- Thread gameThread
+- boolean running
+- FrameRate frameRate
++ GameCamera2D camera
+# <<Create>> Game(String,int,int)
+# void addScene(Scene)
+- void init(int,boolean)
++ void run()
+- void sleep(int)
++ {static} void launch(Game,int,boolean)
+- void update()
+~ void destroy()
+- void stop()
++ {static} GLProfile getProfile()
++ int getWidth()
++ int getHeight()
+}
+
+
+class br.com.jogamptest.main.WindowResetListeners {
+- Game game
++ <<Create>> WindowResetListeners(Game)
++ void windowLostFocus(WindowEvent)
++ void windowDestroyNotify(WindowEvent)
+}
+
+
+class br.com.jogamptest.main.PingPongAnimation {
+- int index
+- float counter
+- int control
+- int interval
+- boolean looping
+- boolean pingPong
+- GLImage[] images
++ <<Create>> PingPongAnimation(String[],int)
++ <<Create>> PingPongAnimation(String[],int,boolean)
++ void update(float)
++ void draw(GL2Graphics,float,float,float)
++ boolean isFinished()
++ boolean isLooping()
++ boolean isPingPong()
++ void reset()
++ int getIndex()
++ void dispose()
+}
+
+
+class br.com.jogamptest.main.TestGame {
++ {static} int WIDTH
++ {static} int HEIGHT
++ {static} int GAME_FPS
++ {static} String GAME_TITLE
+- <<Create>> TestGame(String,int,int)
++ {static} void main(String[])
+}
+
+
+class br.com.jogamptest.main.GLImage {
+- Texture texture
+- int width
+- int height
++ <<Create>> GLImage(String)
++ int getHeight()
++ int getWidth()
++ Texture getTexture()
++ void dispose()
+}
+
+
+class br.com.jogamptest.main.FloatColor {
++ float red
++ float green
++ float blue
++ float alpha
++ <<Create>> FloatColor(float,float,float,float)
+}
+
+
+class br.com.jogamptest.main.IntColor {
++ short red
++ short green
++ short blue
++ short alpha
++ <<Create>> IntColor(int,int,int,int)
+}
+
+
+class br.com.jogamptest.main.TestScene {
++ Game game
+- IGameObject player
++ <<Create>> TestScene(Game)
++ void start()
++ void input(float)
++ void update(float)
++ void draw(GL2Graphics)
++ void stop()
+}
+
+
+class br.com.jogamptest.main.Animation {
+- int index
+- float counter
+- int interval
+- boolean looping
+- GLImage[] images
++ <<Create>> Animation(String[],int)
++ <<Create>> Animation(String[],int,boolean)
++ void update(float)
++ void draw(GL2Graphics,float,float,float)
++ boolean isFinished()
++ boolean isLooping()
++ boolean isPingPong()
++ void reset()
++ int getIndex()
++ void dispose()
+}
+
+
+class br.com.jogamptest.main.FrameRate {
+- String frameRate
+- long lasTime
+- long delta
+- int frameCounter
++ void initialize()
++ void calculate()
++ String getFrameRate()
+}
+
+
+class br.com.jogamptest.main.GameMouseListener {
+- {static} int BUTTON_COUNT
+- Point mousePosition
+- Point currentPosition
+- boolean[] mouse
+- int[] polled
+- float notches
+- float polledNotches
+- int buttonPressed
+- int buttonRelease
+- Game game
++ <<Create>> GameMouseListener(Game)
++ void pollEvent()
++ Point getMousePosition()
++ float getNotches()
++ boolean isButtonDown(int)
++ boolean isButtonDownOnce(int)
++ void mouseClicked(MouseEvent)
++ void mouseEntered(MouseEvent)
++ void mouseExited(MouseEvent)
++ void mousePressed(MouseEvent)
++ void mouseReleased(MouseEvent)
++ void mouseMoved(MouseEvent)
++ void mouseDragged(MouseEvent)
++ void mouseWheelMoved(MouseEvent)
++ float worldX()
++ float worldY()
++ void reset()
+}
+
+
+class br.com.jogamptest.main.FloatColorPalette {
++ {static} FloatColor BLACK
++ {static} FloatColor WHITE
++ {static} FloatColor RED
++ {static} FloatColor GREEN
++ {static} FloatColor BLUE
++ {static} FloatColor ROXY
++ {static} FloatColor YELLOW
+- <<Create>> FloatColorPalette()
+}
+
+
+interface br.com.jogamptest.main.Scene {
+~ void start()
+~ void input(float)
+~ void update(float)
+~ void draw(GL2Graphics)
+~ void stop()
+}
+
+class br.com.jogamptest.main.GL2Graphics {
+- GL2 gl2
++ <<Create>> GL2Graphics()
++ void drawRect(FloatColor,float,float,float,float)
++ void drawRect(FloatColor,float,float,float,float,float)
++ void fillRect(FloatColor,float,float,float,float)
++ void fillRect(FloatColor,float,float,float,float,float)
++ void drawRect(IntColor,float,float,float,float)
++ void drawRect(IntColor,float,float,float,float,float)
++ void fillRect(IntColor,float,float,float,float)
++ void fillRect(IntColor,float,float,float,float,float)
++ void drawTexture(Texture,float,float,float,float)
++ void drawTexture(Texture,float,float,float,float,float)
+}
+
+
+class br.com.jogamptest.main.IntColorPalette {
++ {static} IntColor BLACK
++ {static} IntColor WHITE
++ {static} IntColor RED
++ {static} IntColor GREEN
++ {static} IntColor BLUE
++ {static} IntColor ROXY
++ {static} IntColor YELLOW
+- <<Create>> IntColorPalette()
+}
+
+
+class br.com.jogamptest.main.GameInputListener {
+- boolean[] keys
+- int[] polled
++ <<Create>> GameInputListener()
++ void keyPressed(KeyEvent)
++ void keyReleased(KeyEvent)
++ void pollEvent()
++ boolean isKeyDown(int)
++ boolean isKeyDownOnce(int)
++ void reset()
+}
+
+
+abstract class br.com.jogamptest.main.GameObject {
+# float x
+# float y
+# float rotation
+# List<IAnimation> animations
+# int index
++ <<Create>> GameObject(float,float)
++ void draw(GL2Graphics)
++ void dispose()
+}
+
+
+class br.com.jogamptest.main.GameCamera2D {
++ float x
++ float y
++ <<Create>> GameCamera2D()
+}
+
+
+interface br.com.jogamptest.main.IAnimation {
+~ void update(float)
+~ void draw(GL2Graphics,float,float,float)
+~ boolean isFinished()
+~ boolean isLooping()
+~ boolean isPingPong()
+~ void reset()
+~ int getIndex()
+~ void dispose()
+}
+
+
+
+com.jogamp.opengl.GLEventListener <|.. br.com.jogamptest.main.GLWindowEventListener
+br.com.jogamptest.main.GameObject <|-- br.com.jogamptest.main.Player
+br.com.jogamptest.main.Runnable <|.. br.com.jogamptest.main.Game
+com.jogamp.newt.event.WindowAdapter <|-- br.com.jogamptest.main.WindowResetListeners
+br.com.jogamptest.main.IAnimation <|.. br.com.jogamptest.main.PingPongAnimation
+br.com.jogamptest.main.Game <|-- br.com.jogamptest.main.TestGame
+br.com.jogamptest.main.Scene <|.. br.com.jogamptest.main.TestScene
+br.com.jogamptest.main.IAnimation <|.. br.com.jogamptest.main.Animation
+com.jogamp.newt.event.MouseListener <|.. br.com.jogamptest.main.GameMouseListener
+com.jogamp.newt.event.KeyListener <|.. br.com.jogamptest.main.GameInputListener
+br.com.jogamptest.main.IGameObject <|.. br.com.jogamptest.main.GameObject
+@enduml

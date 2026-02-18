@@ -19,9 +19,9 @@ public final class GL2Graphics
 
 	public void drawRect(FloatColor color, float x, float y, float width, float height, float rotation)
 	{
-		if(GLWindowEventListener.gl2 != null)
+		if(GLWindowEventListener.getGl2() != null)
 		{
-			gl2 = GLWindowEventListener.gl2;
+			gl2 = GLWindowEventListener.getGl2();
 		}
 
 		if(gl2 != null)
@@ -29,7 +29,7 @@ public final class GL2Graphics
 			gl2.glTranslatef(x, y, 0);
 			gl2.glRotatef(-rotation, 0, 0, 1);
 
-			gl2.glColor4f(color.getRed(), color.getGreen(), color.getBlue(),color.getAlpha());
+			gl2.glColor4f(color.red, color.green, color.blue,color.alpha);
 
 			gl2.glBegin(GL2.GL_LINE_LOOP);
 			gl2.glVertex2f(-width / 2, -height / 2);
@@ -50,9 +50,9 @@ public final class GL2Graphics
 	}
 	public void fillRect(FloatColor color, float x, float y, float width, float height, float rotation)
 	{
-		if(GLWindowEventListener.gl2 != null)
+		if(GLWindowEventListener.getGl2() != null)
 		{
-			gl2 = GLWindowEventListener.gl2;
+			gl2 = GLWindowEventListener.getGl2();
 		}
 
 		if(gl2 != null)
@@ -60,7 +60,7 @@ public final class GL2Graphics
 			gl2.glTranslatef(x, y, 0);
 			gl2.glRotatef(-rotation, 0, 0, 1);
 
-			gl2.glColor4f(color.getRed(), color.getGreen(), color.getBlue(),color.getAlpha());
+			gl2.glColor4f(color.red, color.green, color.blue,color.alpha);
 
 			gl2.glBegin(GL2.GL_QUADS);
 			gl2.glVertex2f(-width / 2, -height / 2);
@@ -82,9 +82,9 @@ public final class GL2Graphics
 
 	public void drawRect(IntColor color, float x, float y, float width, float height, float rotation)
 	{
-		if(GLWindowEventListener.gl2 != null)
+		if(GLWindowEventListener.getGl2() != null)
 		{
-			gl2 = GLWindowEventListener.gl2;
+			gl2 = GLWindowEventListener.getGl2();
 		}
 
 		if(gl2 != null)
@@ -92,7 +92,7 @@ public final class GL2Graphics
 			gl2.glTranslatef(x, y, 0);
 			gl2.glRotatef(-rotation, 0, 0, 1);
 
-			gl2.glColor4f(color.getRed(), color.getGreen(), color.getBlue(),color.getAlpha());
+			gl2.glColor4f(color.red, color.green, color.blue,color.alpha);
 
 			gl2.glBegin(GL2.GL_LINE_LOOP);
 			gl2.glVertex2f(-width / 2, -height / 2);
@@ -113,9 +113,9 @@ public final class GL2Graphics
 	}
 	public void fillRect(IntColor color, float x, float y, float width, float height, float rotation)
 	{
-		if(GLWindowEventListener.gl2 != null)
+		if(GLWindowEventListener.getGl2() != null)
 		{
-			gl2 = GLWindowEventListener.gl2;
+			gl2 = GLWindowEventListener.getGl2();
 		}
 
 		if(gl2 != null)
@@ -123,7 +123,7 @@ public final class GL2Graphics
 			gl2.glTranslatef(x, y, 0);
 			gl2.glRotatef(-rotation, 0, 0, 1);
 
-			gl2.glColor4f(color.getRed(), color.getGreen(), color.getBlue(),color.getAlpha());
+			gl2.glColor4f(color.red, color.green, color.blue,color.alpha);
 
 			gl2.glBegin(GL2.GL_QUADS);
 			gl2.glVertex2f(-width / 2, -height / 2);
@@ -144,9 +144,9 @@ public final class GL2Graphics
 
 	public void drawTexture(Texture texture, float x, float y, float width, float height, float rotation)
 	{
-		if(GLWindowEventListener.gl2 != null)
+		if(GLWindowEventListener.getGl2() != null)
 		{
-			gl2 = GLWindowEventListener.gl2;
+			gl2 = GLWindowEventListener.getGl2();
 		}
 
 		if(gl2 != null && texture != null)
@@ -156,8 +156,9 @@ public final class GL2Graphics
 			gl2.glTranslatef(x, y, 0);
 			gl2.glRotatef(-rotation, 0, 0, 1);
 
-			gl2.glEnable(GL2.GL_SRC_ALPHA | GL2.GL_BLEND_SRC_ALPHA);
 			gl2.glEnable(GL2.GL_TEXTURE_2D);
+			gl2.glEnable(GL2.GL_BLEND);
+			gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE_MINUS_SRC_ALPHA);
 
 			gl2.glBegin(GL2.GL_QUADS);
 				gl2.glTexCoord2f(0,1);
@@ -174,7 +175,8 @@ public final class GL2Graphics
 			gl2.glBindTexture(GL2.GL_TEXTURE_2D,0);
 
 			gl2.glDisable(GL2.GL_TEXTURE_2D);
-			gl2.glDisable(GL2.GL_SRC_ALPHA | GL2.GL_BLEND_SRC_ALPHA);
+			gl2.glDisable(GL2.GL_BLEND);
+			gl2.glBlendFunc(0,0);
 
 			gl2.glRotatef(rotation, 0, 0, 1);
 			gl2.glTranslatef(-x, -y, 0);

@@ -1,5 +1,6 @@
 package br.com.jogamptest.main;
 
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
@@ -25,6 +26,10 @@ public class GLImage
 
 			width = image.getWidth()/Game.UNITS/2;
 			height = image.getHeight()/Game.UNITS/2;
+
+			GLWindowEventListener.getGl2().glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_MAG_FILTER,GL2.GL_LINEAR);
+			GLWindowEventListener.getGl2().glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_MIN_FILTER,GL2.GL_LINEAR);
+
 			texture = AWTTextureIO.newTexture(Game.getProfile(), image,true);
 		}
 		catch (IOException e)
@@ -50,6 +55,6 @@ public class GLImage
 
 	public void dispose()
 	{
-		texture.destroy(GLWindowEventListener.gl2);
+		texture.destroy(GLWindowEventListener.getGl2());
 	}
 }

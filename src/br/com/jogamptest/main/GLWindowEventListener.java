@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class GLWindowEventListener implements GLEventListener
 {
-	public static GL2 gl2;
+	private static GL2 gl2;
 	private final GL2Graphics graphics;
 	private final Game game;
 
@@ -32,7 +32,7 @@ public class GLWindowEventListener implements GLEventListener
 
 	private void staff(GL2 gl2)
 	{
-		gl2.glClearColor(0f,0f,0f,1f);
+		gl2.glClearColor(0f,1f,1f,1f);
 		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 	}
 
@@ -57,7 +57,11 @@ public class GLWindowEventListener implements GLEventListener
 
 		staff(gl2);
 
+		gl2.glTranslatef(-game.camera.x,-game.camera.y,0);
+
 		game.currentScene.draw(graphics);
+
+		gl2.glTranslatef(game.camera.x,game.camera.y,0);
 	}
 
 	@Override
@@ -75,5 +79,10 @@ public class GLWindowEventListener implements GLEventListener
 
 		gl2.glOrtho( -Game.UNITS /2f, Game.UNITS /2f,-units,units,-1,1);
 		gl2.glMatrixMode(GL2.GL_MODELVIEW);
+	}
+
+	public static GL2 getGl2()
+	{
+		return gl2;
 	}
 }

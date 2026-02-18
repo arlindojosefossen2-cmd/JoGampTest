@@ -28,6 +28,8 @@ public abstract class Game implements Runnable
 	private boolean running;
 	private final FrameRate frameRate = new FrameRate();
 
+	public final GameCamera2D camera = new GameCamera2D();
+
 	protected Game(String title,int width,int height)
 	{
 		this.title = title;
@@ -74,7 +76,7 @@ public abstract class Game implements Runnable
 			input = new GameInputListener();
 			window.addKeyListener(input);
 
-			mouse = new GameMouseListener();
+			mouse = new GameMouseListener(this);
 			window.addMouseListener(mouse);
 
 			windowListener = new WindowResetListeners(this);
@@ -194,5 +196,15 @@ public abstract class Game implements Runnable
 	public static GLProfile getProfile()
 	{
 		return profile;
+	}
+
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public int getHeight()
+	{
+		return height;
 	}
 }
