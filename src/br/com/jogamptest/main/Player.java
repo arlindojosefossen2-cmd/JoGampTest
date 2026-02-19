@@ -1,10 +1,12 @@
 package br.com.jogamptest.main;
 
+import com.jogamp.newt.event.MouseEvent;
+
 import java.awt.event.KeyEvent;
 
 public final class Player extends GameObject
 {
-	public static final float SPEED = 5f;
+	public static final float SPEED = 1f;
 	public static final int DIRECTION_UP = 3;
 	public static final int DIRECTION_LEFT = 2;
 	public static final int DIRECTION_RIGHT = 1;
@@ -26,8 +28,8 @@ public final class Player extends GameObject
 	@Override
 	public void start()
 	{
-		x = .5f;
-		y = .5f;
+		x = 0f;
+		y = 0f;
 
 		this.animations.add(new Animation(new String[]
 				{
@@ -35,6 +37,9 @@ public final class Player extends GameObject
 						"/girl_1.png",
 						"/girl_2.png",
 				},10));
+
+		width = 32/Game.UNITS/2;
+		height = 32/Game.UNITS/2;
 	}
 
 	@Override
@@ -64,6 +69,9 @@ public final class Player extends GameObject
 		{
 			moving = false;
 		}
+
+		if(game.mouse.isButtonDownOnce(MouseEvent.BUTTON1))
+			System.out.println(game.mouse.getMousePosition());
 	}
 
 	@Override

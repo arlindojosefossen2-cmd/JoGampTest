@@ -76,8 +76,8 @@ public class GLWindowEventListener implements GLEventListener
 		gl2.glLoadIdentity();
 
 		float units = height / ((float) width / Game.UNITS) / 2;
-
 		gl2.glOrtho( -Game.UNITS /2f, Game.UNITS /2f,-units,units,-1,1);
+
 		gl2.glMatrixMode(GL2.GL_MODELVIEW);
 	}
 

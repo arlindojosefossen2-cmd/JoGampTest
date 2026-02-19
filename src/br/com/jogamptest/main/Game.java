@@ -137,7 +137,6 @@ public abstract class Game implements Runnable
 
 			lastTime = curTime;
 		}
-		destroy();
 	}
 
 	private void sleep(int fpsSleep)
@@ -185,7 +184,7 @@ public abstract class Game implements Runnable
 
 		try
 		{
-			gameThread.join(1L);
+			gameThread.join(5000L);
 		}
 		catch (InterruptedException e)
 		{
